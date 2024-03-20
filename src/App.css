@@ -1,0 +1,38 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  white-space: wrap;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 0fr);
+}
+
+.cell {
+  display: flex;
+  border: 2px solid white;
+  width: 25vw;
+  height: 25vw;
+}
+
+.cell:nth-child(-n+3) {
+  border-top: none;
+}
+
+.cell:nth-child(n+7) {
+  border-bottom: none;
+}
+
+.cell:nth-child(3n+1) {
+  border-left: none;
+}
+
+.cell:nth-child(3n) {
+  border-right: none;
+}

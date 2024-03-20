@@ -1,0 +1,10 @@
+.piece-button {
+  flex-grow: 1;
+  opacity: 0;
+  transition: opacity .25s;
+  cursor: pointer;
+}
+
+.piece-button:hover {
+  opacity: .5;
+}
