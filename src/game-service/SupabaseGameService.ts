@@ -6,7 +6,7 @@ type GameRecord = {
   board: Board;
 };
 
-export default class SupabaseGameService implements IGameService {
+class SupabaseGameService implements IGameService {
   private board: Board = Array(9).fill(null);
   private gameId: string | null = null;
   private supabase = createClient(
@@ -96,3 +96,5 @@ export default class SupabaseGameService implements IGameService {
     this.supabase.removeAllChannels();
   }
 }
+
+export default new SupabaseGameService();

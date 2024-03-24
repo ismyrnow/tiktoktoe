@@ -1,33 +1,29 @@
-import { useEffect, useRef, useState } from "react";
-import { IGameService } from "./GameServiceTypes";
-import SupabaseGameService from "./SupabaseGameService";
+import { useEffect, useState } from "react";
+import gameService from "./SupabaseGameService";
 
 export default function useGameService(existingGameId: string | null = null) {
-  const gameService = useRef<IGameService>(new SupabaseGameService());
   const [gameId, setGameId] = useState<string | null>(existingGameId);
-  const [board, setBoard] = useState(gameService.current.getBoard());
-  const [nextPiece, setNextPiece] = useState(
-    gameService.current.getNextPiece()
-  );
+  const [board, setBoard] = useState(gameService.getBoard());
+  const [nextPiece, setNextPiece] = useState(gameService.getNextPiece());
 
   useEffect(() => {
     async function initializeGame() {
       if (existingGameId) {
-        await gameService.current.joinGame(existingGameId);
+        await gameService.joinGame(existingGameId);
       } else {
-        await gameService.current.createGame();
-        setGameId(gameService.current.getGameId());
+        await gameService.createGame();
+        setGameId(gameService.getGameId());
       }
-      gameService.current.subscribe(() => {
-        setBoard(gameService.current.getBoard());
-        setNextPiece(gameService.current.getNextPiece());
+      gameService.subscribe(() => {
+        setBoard(gameService.getBoard());
+        setNextPiece(gameService.getNextPiece());
       });
     }
 
     initializeGame();
 
     return () => {
-      gameService.current.unsubscribe();
+      gameService.unsubscribe();
     };
   }, [existingGameId]);
 
@@ -35,6 +31,6 @@ export default function useGameService(existingGameId: string | null = null) {
     gameId,
     board,
     nextPiece,
-    playNextPiece: gameService.current.playNextPiece.bind(gameService.current),
+    playNextPiece: gameService.playNextPiece.bind(gameService),
   };
 }
