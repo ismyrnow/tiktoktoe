@@ -11,8 +11,7 @@ interface Props {
 }
 
 function Game({ initialGameId }: Props) {
-  const playerPiece = initialGameId ? "o" : "x";
-  const { gameId, board, nextPiece, playNextPiece } =
+  const { gameId, board, nextPiece, playerPiece, playNextPiece } =
     useGameService(initialGameId);
   const NextPiece = nextPiece === "x" ? CrossButton : NoughtButton;
 
@@ -20,11 +19,14 @@ function Game({ initialGameId }: Props) {
     if (gameId) {
       window.history.pushState({}, "", gameId);
     }
-    window.localStorage.setItem("gameId", playerPiece);
   }, [gameId]);
 
   if (!gameId) {
-    return <div>Starting a game...</div>;
+    if (initialGameId) {
+      return <div>Joining a game...</div>;
+    } else {
+      return <div>Starting a game...</div>;
+    }
   }
 
   return (

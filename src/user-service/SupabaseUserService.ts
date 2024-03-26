@@ -48,6 +48,16 @@ class SupabaseUserService implements IUserService {
 
     throw new Error("Signed up, but no session started");
   }
+
+  async getUserId(): Promise<string> {
+    const session = await this.getSession();
+
+    if (!session) {
+      throw new Error("No session found");
+    }
+
+    return session.user.id;
+  }
 }
 
 export default new SupabaseUserService();
