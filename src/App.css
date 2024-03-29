@@ -16,7 +16,7 @@ h1 {
 
 .cell {
   display: flex;
-  border: 2px solid white;
+  border: 2px solid currentColor;
   width: 25vw;
   height: 25vw;
 }
