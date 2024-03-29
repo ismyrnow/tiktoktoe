@@ -6,6 +6,7 @@ export interface IGameService {
   joinGame(gameId: string): Promise<void>;
   getGameId(): string | null;
   getBoard(): Board;
+  getPlayerPiece(): Piece | null;
   getNextPiece(): Piece;
   playNextPiece(index: number): Promise<void>;
   subscribe(callback: () => void): void;
