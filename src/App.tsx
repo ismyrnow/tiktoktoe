@@ -22,7 +22,7 @@ function App() {
 
   return (
     <>
-      <h1>Tic-Tac-Toe</h1>
+      <h1>TikTokToe</h1>
       <Game initialGameId={initialGameId} />
     </>
   );

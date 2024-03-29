@@ -36,3 +36,23 @@ h1 {
 .cell:nth-child(3n) {
   border-right: none;
 }
+
+.players {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+}
+
+.players .player {
+  width: 40%;
+}
+
+.players .vs {
+  font-size: 2rem;
+  margin: auto;
+}
+
+.turn {
+  font-size: 1.5rem;
+  margin: 1rem 0;
+}
