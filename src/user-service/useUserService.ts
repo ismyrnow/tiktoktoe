@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import userService from "./LocalUserService";
+import userService from "./SupabaseUserService";
 
 // Use an init flag because react wants to call our useEffect twice in strict mode.
 // See https://react.dev/learn/you-might-not-need-an-effect#initializing-the-application
