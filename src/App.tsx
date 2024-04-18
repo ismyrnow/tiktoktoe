@@ -6,7 +6,7 @@ const lastPathSegment = window.location.pathname.split("/").pop();
 
 function App() {
   const { isSignedIn, loading } = useUserService();
-  let initialGameId = lastPathSegment;
+  const initialGameId = lastPathSegment || undefined;
 
   if (loading) {
     return <p>Loading...</p>;
@@ -15,11 +15,6 @@ function App() {
   if (!loading && !isSignedIn) {
     return <p>Failed to sign in</p>;
   }
-
-  if (lastPathSegment === "tiktoktoe") {
-    initialGameId = undefined;
-  }
-
   return (
     <>
       <h1>TikTokToe</h1>
