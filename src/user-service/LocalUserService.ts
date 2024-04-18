@@ -18,7 +18,7 @@ class LocalUserService implements IUserService {
 
   async signInAnonymously(): Promise<string> {
     console.log("Signing up anonymously");
-    const email = `${self.crypto.randomUUID()}@random.tictactoe.ish.lol`;
+    const email = `${self.crypto.randomUUID()}@tiktoktoe.ish.lol`;
 
     this.session = email;
 

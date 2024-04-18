@@ -27,7 +27,7 @@ class SupabaseUserService implements IUserService {
   async signInAnonymously(): Promise<Session> {
     console.log("Signing up anonymously");
     const password = self.crypto.randomUUID();
-    const email = `${self.crypto.randomUUID()}@random.tictactoe.ish.lol`;
+    const email = `${self.crypto.randomUUID()}@tiktoktoe.ish.lol`;
     const { data, error } = await this.supabase.auth.signUp({
       email,
       password,
