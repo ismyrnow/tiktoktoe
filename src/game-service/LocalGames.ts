@@ -1,4 +1,4 @@
-import { Board } from "./GameServiceTypes";
+import { Game } from "./GameServiceTypes";
 
 const STORAGE_KEY = "local_games";
 
@@ -74,11 +74,4 @@ export default class Games {
       window.removeEventListener("storage", this.storageEventListener);
     }
   }
-}
-
-interface Game {
-  id: string;
-  board: Board;
-  player1: string;
-  player2: string | null;
 }

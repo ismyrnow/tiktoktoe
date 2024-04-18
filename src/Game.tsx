@@ -12,7 +12,7 @@ interface Props {
 }
 
 function Game({ initialGameId }: Props) {
-  const { gameId, board, nextPiece, playerPiece, playNextPiece } =
+  const { gameId, board, nextPiece, playerPiece, playNextPiece, status } =
     useGameService(initialGameId);
   const opponentPiece = playerPiece === "x" ? "o" : "x";
   const isYourTurn = nextPiece === playerPiece;
@@ -24,7 +24,7 @@ function Game({ initialGameId }: Props) {
     }
   }, [gameId]);
 
-  if (!gameId || !playerPiece) {
+  if (status === "initializing") {
     if (initialGameId) {
       return <div>Joining a game...</div>;
     } else {

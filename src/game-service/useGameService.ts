@@ -10,19 +10,23 @@ export default function useGameService(existingGameId: string | null = null) {
   const [board, setBoard] = useState(gameService.getBoard());
   const [nextPiece, setNextPiece] = useState(gameService.getNextPiece());
   const [playerPiece, setPlayerPiece] = useState(gameService.getPlayerPiece());
+  const [status, setStatus] = useState(gameService.getStatus());
 
   const syncState = () => {
     const playerPiece = gameService.getPlayerPiece();
     const board = gameService.getBoard();
     const nextPiece = gameService.getNextPiece();
+    const status = gameService.getStatus();
     console.log("useGameService: Syncing state", {
       playerPiece,
       board,
       nextPiece,
+      status,
     });
     setPlayerPiece(playerPiece);
     setBoard(board);
     setNextPiece(nextPiece);
+    setStatus(status);
   };
 
   const playNextPiece = async (index: number) => {
@@ -66,5 +70,6 @@ export default function useGameService(existingGameId: string | null = null) {
     nextPiece,
     playerPiece,
     playNextPiece,
+    status,
   };
 }

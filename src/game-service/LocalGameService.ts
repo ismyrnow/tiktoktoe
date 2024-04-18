@@ -1,23 +1,27 @@
 import userService from "../user-service/LocalUserService";
-import { Board, IGameService, Piece } from "./GameServiceTypes";
+import { Game, IGameService, Piece, Status } from "./GameServiceTypes";
 import LocalGames from "./LocalGames";
+import { getNextPiece, getStatus } from "./game-helpers";
+
+const BlankGame: Game = {
+  id: "",
+  board: Array(9).fill(null),
+  player1: "",
+  player2: null,
+};
 
 class LocalGameService implements IGameService {
-  private board: Board = Array(9).fill(null);
+  private userId: string | null = null;
+  private game: Game = BlankGame;
   private onUpdateCallback: (() => void) | null = null;
-  private gameId: string | null = null;
-  private playerPiece: Piece | null = null;
 
   async createGame(): Promise<void> {
-    const userId = await userService.getUserId();
+    this.userId = await userService.getUserId();
 
-    this.gameId = self.crypto.randomUUID();
-    this.playerPiece = "x";
-
-    LocalGames.create({
-      id: this.gameId,
-      board: this.board,
-      player1: userId,
+    this.game = LocalGames.create({
+      id: self.crypto.randomUUID(),
+      board: Array(9).fill(null),
+      player1: this.userId,
       player2: null,
     });
 
@@ -25,66 +29,54 @@ class LocalGameService implements IGameService {
   }
 
   async joinGame(gameId: string): Promise<void> {
-    this.gameId = gameId;
-
     const userId = await userService.getUserId();
 
-    const game = LocalGames.get(this.gameId);
+    const game = LocalGames.get(gameId);
 
-    if (game.player1 === userId) {
+    if (game.player1 === userId || game.player2 === userId) {
       console.log("LocalGameService: Already joined the game", game);
-      this.board = game.board;
-      this.playerPiece = "x";
-      return;
-    } else if (game.player2 === userId) {
-      console.log("LocalGameService: Already joined the game", game);
-      this.board = game.board;
-      this.playerPiece = "o";
-      return;
+    } else {
+      // Boots player 2 if already exists
+      this.game = LocalGames.update({
+        id: gameId,
+        player2: userId,
+      });
     }
-
-    // Boots player 2 if already exists
-    const updatedGame = LocalGames.update({
-      id: this.gameId,
-      player2: userId,
-    });
-
-    this.board = updatedGame.board;
-    this.playerPiece = "o";
 
     return;
   }
 
   public getGameId() {
-    return this.gameId;
+    return this.game.id;
   }
 
-  public getBoard(): Board {
-    return this.board;
+  public getBoard() {
+    return this.game.board;
   }
 
-  public getPlayerPiece(): Piece | null {
-    return this.playerPiece;
+  public getPlayerPiece(): Piece {
+    return this.game.player1 === this.userId ? "x" : "o";
   }
 
   public getNextPiece(): Piece {
-    if (this.board.filter((piece) => piece !== null).length % 2 === 0) {
-      return "x";
-    } else {
-      return "o";
-    }
+    return getNextPiece(this.game.board);
+  }
+
+  public getStatus(): Status {
+    return getStatus(this.game, this.userId);
   }
 
   public async playNextPiece(index: number): Promise<void> {
-    if (this.board[index] !== null) {
+    if (this.game.board[index] !== null) {
       throw new Error("Invalid move");
     }
 
-    this.board[index] = this.getNextPiece();
+    const board = this.game.board.slice();
+    board[index] = this.getNextPiece();
 
-    LocalGames.update({
-      id: this.gameId!,
-      board: this.board,
+    this.game = LocalGames.update({
+      id: this.game.id,
+      board,
     });
 
     this.onUpdateCallback?.();
@@ -94,7 +86,7 @@ class LocalGameService implements IGameService {
 
   public subscribe(callback: () => void): void {
     this.onUpdateCallback = () => {
-      this.board = LocalGames.get(this.gameId!).board;
+      this.game = LocalGames.get(this.game.id);
       callback();
     };
     LocalGames.subscribe(this.onUpdateCallback);
