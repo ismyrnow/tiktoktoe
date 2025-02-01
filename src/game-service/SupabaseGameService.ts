@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { Board, IGameService, Piece } from "./GameServiceTypes";
+import { Board, IGameService, Piece, Status } from "./GameServiceTypes";
 import userService from "../user-service/SupabaseUserService";
 
 type GameRecord = {
@@ -123,6 +123,10 @@ class SupabaseGameService implements IGameService {
     if (error) {
       throw new Error("Invalid move");
     }
+  }
+
+  public getStatus(): Status {
+    throw new Error("Not implemented");
   }
 
   public subscribe(callback: () => void): void {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import gameService from "./SupabaseGameService";
+import gameService from "./LocalGameService";
 
 // Use an init flag because react wants to call our useEffect twice in strict mode.
 // See https://react.dev/learn/you-might-not-need-an-effect#initializing-the-application
@@ -11,22 +11,26 @@ export default function useGameService(existingGameId: string | null = null) {
   const [nextPiece, setNextPiece] = useState(gameService.getNextPiece());
   const [playerPiece, setPlayerPiece] = useState(gameService.getPlayerPiece());
   const [status, setStatus] = useState(gameService.getStatus());
+  const [win, setWin] = useState(gameService.getWin());
 
   const syncState = () => {
     const playerPiece = gameService.getPlayerPiece();
     const board = gameService.getBoard();
     const nextPiece = gameService.getNextPiece();
     const status = gameService.getStatus();
+    const win = gameService.getWin();
     console.log("useGameService: Syncing state", {
       playerPiece,
       board,
       nextPiece,
       status,
+      win,
     });
     setPlayerPiece(playerPiece);
     setBoard(board);
     setNextPiece(nextPiece);
     setStatus(status);
+    setWin(win);
   };
 
   const playNextPiece = async (index: number) => {
@@ -71,5 +75,6 @@ export default function useGameService(existingGameId: string | null = null) {
     playerPiece,
     playNextPiece,
     status,
+    win,
   };
 }

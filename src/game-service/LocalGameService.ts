@@ -1,7 +1,7 @@
 import userService from "../user-service/LocalUserService";
-import { Game, IGameService, Piece, Status } from "./GameServiceTypes";
+import { Game, IGameService, Piece, Status, Win } from "./GameServiceTypes";
 import LocalGames from "./LocalGames";
-import { getNextPiece, getStatus } from "./game-helpers";
+import { getNextPiece, getStatus, getWin } from "./game-helpers";
 
 const BlankGame: Game = {
   id: "",
@@ -58,12 +58,16 @@ class LocalGameService implements IGameService {
     return this.game.player1 === this.userId ? "x" : "o";
   }
 
-  public getNextPiece(): Piece {
+  public getNextPiece(): Piece | null {
     return getNextPiece(this.game.board);
   }
 
   public getStatus(): Status {
-    return getStatus(this.game, this.userId);
+    return getStatus(this.game);
+  }
+
+  public getWin(): Win | null {
+    return getWin(this.game.board);
   }
 
   public async playNextPiece(index: number): Promise<void> {

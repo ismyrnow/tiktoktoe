@@ -17,7 +17,9 @@ function App() {
   }
   return (
     <>
-      <h1>TikTokToe</h1>
+      <h1>
+        <a href="/">TikTokToe</a>
+      </h1>
       <Game initialGameId={initialGameId} />
     </>
   );
