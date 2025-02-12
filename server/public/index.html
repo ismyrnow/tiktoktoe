@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tik-Tac-Toe Client</title>
+    <style>
+      #gameBoard button {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        margin: 2px;
+      }
+      #gameBoard {
+        display: grid;
+        grid-template-columns: repeat(3, auto);
+        gap: 4px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Tik-Tac-Toe</h1>
+    <div id="status"></div>
+    <button id="createGame">Create Game</button>
+    <br /><br />
+    <input type="text" id="gameIdInput" placeholder="Enter Game ID to join" />
+    <button id="joinGame">Join Game</button>
+
+    <div id="gameBoard"></div>
+
+    <!-- Socket.IO client library -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      const statusEl = document.getElementById('status');
+      const boardEl = document.getElementById('gameBoard');
+      let currentGame = null;
+
+      // Create game button listener
+      document.getElementById('createGame').addEventListener('click', () => {
+        socket.emit('createGame');
+      });
+
+      // Join game button listener
+      document.getElementById('joinGame').addEventListener('click', () => {
+        const gameId = document.getElementById('gameIdInput').value.trim();
+        if (!gameId) {
+          alert('Please enter a valid game id.');
+          return;
+        }
+        socket.emit('joinGame', gameId);
+      });
+
+      // Listen for server events
+
+      socket.on('gameCreated', (game) => {
+        currentGame = game;
+        statusEl.innerText = `Game created with ID: ${game.id}`;
+        renderBoard(game);
+      });
+
+      socket.on('gameUpdated', (game) => {
+        currentGame = game;
+        // Check if any player is marked as disconnected
+        if (game.player1 === "disconnected" || game.player2 === "disconnected") {
+          statusEl.innerText = `A player has disconnected from game: ${game.id}`;
+          boardEl.innerHTML = '';
+          currentGame = null;
+        } else {
+          statusEl.innerText = `Game updated. Game ID: ${game.id}`;
+        }
+        renderBoard(game);
+      });
+
+      socket.on('error', (errorMessage) => {
+        statusEl.innerText = `Error: ${errorMessage}`;
+      });
+
+      // Render the Tic-Tac-Toe board
+      function renderBoard(game) {
+        boardEl.innerHTML = '';
+        game.board.forEach((piece, index) => {
+          const cell = document.createElement('button');
+          cell.innerText = piece ? piece : '';
+          cell.addEventListener('click', () => {
+            if (!currentGame) return;
+            // Emit the move only if there is an active game.
+            socket.emit('makeMove', { gameId: currentGame.id, index });
+          });
+          boardEl.appendChild(cell);
+        });
+      }
+    </script>
+  </body>
+</html>

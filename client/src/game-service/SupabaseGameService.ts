@@ -129,7 +129,7 @@ class SupabaseGameService implements IGameService {
     const { error } = await this.supabase
       .from("games")
       .update({ board: this.board })
-      .eq("id", this.gameId);
+      .eq("id", this.game.id);
 
     if (error) {
       throw new Error("Invalid move");
@@ -149,7 +149,7 @@ class SupabaseGameService implements IGameService {
           event: "UPDATE",
           schema: "public",
           table: "games",
-          filter: `id=eq.${this.gameId}`,
+          filter: `id=eq.${this.game.id}`,
         },
         (payload) => {
           this.board = payload.new.board;
