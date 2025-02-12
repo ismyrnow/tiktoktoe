@@ -1,5 +1,12 @@
 import { Board, Game, Piece, Status, Win } from "./GameServiceTypes";
 
+export const BLANK_GAME: Game = {
+  id: "",
+  board: Array(9).fill(null),
+  player1: "",
+  player2: null,
+};
+
 export function getStatus(game: Game): Status {
   if (!game.id || !game.player1 || !game.player2) {
     return "initializing";

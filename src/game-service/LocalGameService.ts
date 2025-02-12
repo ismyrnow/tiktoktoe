@@ -1,18 +1,11 @@
 import userService from "../user-service/LocalUserService";
 import { Game, IGameService, Piece, Status, Win } from "./GameServiceTypes";
 import LocalGames from "./LocalGames";
-import { getNextPiece, getStatus, getWin } from "./game-helpers";
-
-const BlankGame: Game = {
-  id: "",
-  board: Array(9).fill(null),
-  player1: "",
-  player2: null,
-};
+import { BLANK_GAME, getNextPiece, getStatus, getWin } from "./game-helpers";
 
 class LocalGameService implements IGameService {
   private userId: string | null = null;
-  private game: Game = BlankGame;
+  private game: Game = BLANK_GAME;
   private onUpdateCallback: (() => void) | null = null;
 
   async createGame(): Promise<void> {
