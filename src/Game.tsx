@@ -17,7 +17,7 @@ function Game({ initialGameId }: Props) {
   const { gameId, board, nextPiece, playerPiece, playNextPiece, status, win } =
     useGameService(initialGameId);
   const opponentPiece = playerPiece === "x" ? "o" : "x";
-  const isYourTurn = nextPiece === playerPiece;
+  const isYourTurn = win ? false : nextPiece === playerPiece;
   const NextPiece = nextPiece === "x" ? CrossButton : NoughtButton;
 
   useEffect(() => {
@@ -30,12 +30,22 @@ function Game({ initialGameId }: Props) {
     if (initialGameId) {
       return <div>Joining a game...</div>;
     } else {
-      return <div>Creating a new game...</div>;
+      return <div>Waiting for other player to join...</div>;
     }
   }
-  const You = <Player active={isYourTurn} name="You" piece={playerPiece} />;
+  const You = (
+    <Player
+      active={win ? win.piece === playerPiece : isYourTurn}
+      name="You"
+      piece={playerPiece}
+    />
+  );
   const Opponent = (
-    <Player active={!isYourTurn} name="Opponent" piece={opponentPiece} />
+    <Player
+      active={win ? win.piece === opponentPiece : !isYourTurn}
+      name="Opponent"
+      piece={opponentPiece}
+    />
   );
 
   const Player1 = playerPiece === "x" ? You : Opponent;
