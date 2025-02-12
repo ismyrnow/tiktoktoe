@@ -1,6 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
-import { Board, IGameService, Piece, Status } from "./GameServiceTypes";
+import {
+  Board,
+  Game,
+  IGameService,
+  Piece,
+  Status,
+  Win,
+} from "./GameServiceTypes";
 import userService from "../user-service/SupabaseUserService";
+import { BLANK_GAME, getStatus, getWin } from "./game-helpers";
 
 type GameRecord = {
   id: string;
@@ -11,7 +19,7 @@ type GameRecord = {
 
 class SupabaseGameService implements IGameService {
   private board: Board = Array(9).fill(null);
-  private gameId: string | null = null;
+  private game: Game = BLANK_GAME;
   private playerPiece: Piece | null = null;
   private supabase = createClient(
     "https://jzhwssitditntmrdisuy.supabase.co",
@@ -28,7 +36,7 @@ class SupabaseGameService implements IGameService {
       throw new Error("Unexpected response");
     }
 
-    this.gameId = game.id;
+    this.game = makeGame(game);
     this.playerPiece = "x";
   }
 
@@ -50,8 +58,6 @@ class SupabaseGameService implements IGameService {
 
   async joinGame(gameId: string) {
     console.log("SupabaseGameService: Joining game", gameId);
-
-    this.gameId = gameId;
 
     const userId = await userService.getUserId();
     const game = await this.getGame(gameId);
@@ -84,12 +90,13 @@ class SupabaseGameService implements IGameService {
     }
 
     console.log("SupabaseGameService: Joined the game", data);
+    this.game = makeGame(game);
     this.board = data.board;
     this.playerPiece = "o";
   }
 
   public getGameId() {
-    return this.gameId;
+    return this.game.id;
   }
 
   public getBoard(): Board {
@@ -106,6 +113,10 @@ class SupabaseGameService implements IGameService {
 
   public getPlayerPiece(): Piece | null {
     return this.playerPiece;
+  }
+
+  public getWin(): Win | null {
+    return getWin(this.board);
   }
 
   public async playNextPiece(index: number): Promise<void> {
@@ -126,7 +137,7 @@ class SupabaseGameService implements IGameService {
   }
 
   public getStatus(): Status {
-    throw new Error("Not implemented");
+    return getStatus(this.game);
   }
 
   public subscribe(callback: () => void): void {
@@ -154,3 +165,12 @@ class SupabaseGameService implements IGameService {
 }
 
 export default new SupabaseGameService();
+
+function makeGame(game: GameRecord): Game {
+  return {
+    id: game.id,
+    board: game.board,
+    player1: game.player_1,
+    player2: game.player_2,
+  };
+}
