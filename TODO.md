@@ -11,6 +11,8 @@
 - [ ] Remove need for user service entirely
 - [ ] Look into simplifying game service to just track Game state changes, and extracting common game logic to useGameService
 - [ ] Look into combining server and client to simplify dev and deployment
+- [ ] Add unit tests to client
+- [ ] Add unit tests to server
 
 ## Completed
 - [x] Build front-end client with UI for all game states
