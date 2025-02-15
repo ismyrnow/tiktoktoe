@@ -18,6 +18,11 @@ h1 a:hover {
   text-decoration: line-through;
 }
 
+.status {
+  font-size: 1.5rem;
+  margin: 1rem 0 3rem;
+}
+
 .board-container {
   position: relative;
 }
@@ -50,22 +55,14 @@ h1 a:hover {
   border-right: none;
 }
 
-.players {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 2rem;
+/** Utility classes */
+
+.pulse {
+  animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite;
 }
 
-.players .player {
-  width: 40%;
-}
-
-.players .vs {
-  font-size: 2rem;
-  margin: auto;
-}
-
-.status {
-  font-size: 1.5rem;
-  margin: 1rem 0;
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
 }

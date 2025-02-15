@@ -57,8 +57,6 @@ class SocketIOGameService implements IGameService {
   async createGame(): Promise<void> {
     console.log("SocketIOGameService: Creating game");
 
-    this.socket.connect();
-
     return new Promise((resolve, reject) => {
       this.socket.emit("createGame");
 
@@ -80,8 +78,6 @@ class SocketIOGameService implements IGameService {
 
   async joinGame(gameId: string): Promise<void> {
     console.log("SocketIOGameService: Joining game", gameId);
-
-    this.socket.connect();
 
     return new Promise((resolve, reject) => {
       this.socket.emit("joinGame", gameId);

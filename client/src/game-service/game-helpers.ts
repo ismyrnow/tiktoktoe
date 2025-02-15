@@ -8,12 +8,20 @@ export const BLANK_GAME: Game = {
 };
 
 export function getStatus(game: Game): Status {
-  if (!game.id || !game.player1 || !game.player2) {
+  if (!game.id) {
     return "initializing";
+  }
+
+  if (game.player1 === "disconnected" || game.player2 === "disconnected") {
+    return "disconnected";
   }
 
   if (game.player1 === game.player2) {
     return "invalid";
+  }
+
+  if ((game.player1 && !game.player2) || (game.player2 && !game.player1)) {
+    return "matchmaking";
   }
 
   const win = getWin(game.board);

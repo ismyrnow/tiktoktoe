@@ -40,8 +40,7 @@ io.on("connection", (socket: Socket) => {
     // Check the game list for a game with an open player slot.
     // If there is one, join it. Otherwise, create a new game.
     const game = Object.values(games).find(
-      (game) =>
-        (game.player1 && !game.player2) || (game.player2 && !game.player1)
+      (game) => game.player1 !== "disconnected" && game.player2 === null
     );
 
     if (game) {
@@ -160,8 +159,9 @@ io.on("connection", (socket: Socket) => {
         console.log(`Game ${game.id} ended due to disconnect.`);
 
         if (
-          game.player1 === "disconnected" &&
-          game.player2 === "disconnected"
+          (game.player1 === "disconnected" &&
+            game.player2 === "disconnected") ||
+          (game.player1 === "disconnected" && game.player2 === null)
         ) {
           delete games[game.id];
           console.log(

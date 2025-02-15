@@ -5,58 +5,19 @@ import CrossButton from "./CrossButton";
 import NoughtButton from "./NoughtButton";
 import useGameService from "./game-service/useGameService";
 import { Piece, Status } from "./game-service/GameServiceTypes";
-import { useEffect } from "react";
-import Player from "./Player";
 import Strike from "./Strike";
 
 function Game() {
-  const { gameId, board, nextPiece, playerPiece, playNextPiece, status, win } =
+  const { board, nextPiece, playerPiece, playNextPiece, status, win } =
     useGameService();
-  const opponentPiece = playerPiece === "x" ? "o" : "x";
   const isYourTurn = win ? false : nextPiece === playerPiece;
   const NextPiece = nextPiece === "x" ? CrossButton : NoughtButton;
-
-  useEffect(() => {
-    if (gameId) {
-      window.history.pushState({}, "", gameId);
-    }
-  }, [gameId]);
-
-  if (!playerPiece) {
-    return <div>Inititializing...</div>;
-  }
-
-  if (status === "initializing") {
-    if (playerPiece === "x") {
-      return <div>Waiting for other player to join...</div>;
-    } else {
-      return <div>Joining an existing game...</div>;
-    }
-  }
-  const You = (
-    <Player
-      active={win ? win.piece === playerPiece : isYourTurn}
-      name="You"
-      piece={playerPiece}
-    />
-  );
-  const Opponent = (
-    <Player
-      active={win ? win.piece === opponentPiece : !isYourTurn}
-      name="Opponent"
-      piece={opponentPiece}
-    />
-  );
-
-  const Player1 = playerPiece === "x" ? You : Opponent;
-  const Player2 = playerPiece === "o" ? You : Opponent;
+  const pending = isStatusPending(status, playerPiece);
 
   return (
     <>
-      <div className="players">
-        {Player1}
-        <div className="vs">vs</div>
-        {Player2}
+      <div className={pending ? "status pulse" : "status"}>
+        {getStatusMessage(status, playerPiece)}
       </div>
       <div className="board-container">
         <div className="board">
@@ -74,17 +35,32 @@ function Game() {
         </div>
         {win && <Strike combination={win.combination} />}
       </div>
-      <div className="status">{getStatusMessage(status, playerPiece)}</div>
     </>
   );
 }
 
-function getStatusMessage(status: Status, playerPiece: Piece) {
+function isStatusPending(status: Status, playerPiece: Piece | null): boolean {
+  const pending =
+    status === "initializing" ||
+    status === "matchmaking" ||
+    (status === "player1_turn" && playerPiece === "o") ||
+    (status === "player2_turn" && playerPiece === "x");
+
+  return pending;
+}
+
+function getStatusMessage(status: Status, playerPiece: Piece | null) {
   switch (status) {
+    case "initializing":
+      return "Connecting...";
+    case "matchmaking":
+      return "Waiting on a player to join...";
+    case "disconnected":
+      return "Opponent disconnected";
     case "player1_turn":
-      return playerPiece === "x" ? "Your turn" : "Opponent's turn";
+      return playerPiece === "x" ? "Your turn" : "Opponent's turn...";
     case "player2_turn":
-      return playerPiece === "o" ? "Your turn" : "Opponent's turn";
+      return playerPiece === "o" ? "Your turn" : "Opponent's turn...";
     case "player1_won":
       return playerPiece === "x" ? "You won!" : "You lost";
     case "player2_won":

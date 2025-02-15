@@ -1,15 +1,13 @@
 # TODO List
 
 ## High Priority
-- [ ] Improve UI to clarify when it's your turn or you're waiting
 - [ ] Dockerize app
 - [ ] Add github workflow for docker container publishing
 - [ ] Set up app hosting on homelab
 
 ## Low Priority
 - [ ] BUG: Client should handle server restarting
-- [ ] BUG: Client should handle opponent disconnecting
-- [ ] Improve UI so that board fits fully onto screen
+- [ ] Improve UI so that board fits fully onto screen on both mobile and desktop
 - [ ] Add timestamps to games
 - [ ] Look into simplifying game service to just track Game state changes, and extracting common game logic to useGameService
 - [ ] Look into combining server and client to simplify dev and deployment
@@ -28,3 +26,5 @@
 - [x] Remove need for user service entirely
 - [x] Add server game monitoring
 - [x] BUG: Fix game cleanup logic
+- [x] Improve UI to clarify when it's your turn or you're waiting
+- [x] BUG: Client should handle opponent disconnecting

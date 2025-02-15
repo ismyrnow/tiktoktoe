@@ -2,6 +2,8 @@ export type Piece = "x" | "o";
 export type Board = Array<Piece | null>;
 export type Status =
   | "initializing"
+  | "matchmaking"
+  | "disconnected"
   | "player1_turn"
   | "player2_turn"
   | "player1_won"
