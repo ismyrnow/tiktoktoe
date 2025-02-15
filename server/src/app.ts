@@ -154,23 +154,56 @@ io.on("connection", (socket: Socket) => {
           : null;
 
       if (whichPlayer) {
-        const updatedGame = { ...game, [whichPlayer]: "disconnected" };
-        io.to(gameId).emit("gameUpdated", updatedGame);
-        console.log(`Game ${gameId} ended due to disconnect.`);
+        game[whichPlayer] = "disconnected";
+
+        io.to(game.id).emit("gameUpdated", game);
+        console.log(`Game ${game.id} ended due to disconnect.`);
 
         if (
-          updatedGame.player1 === "disconnected" &&
-          updatedGame.player2 === "disconnected"
+          game.player1 === "disconnected" &&
+          game.player2 === "disconnected"
         ) {
-          delete games[gameId];
+          delete games[game.id];
           console.log(
-            `Game ${gameId} removed from games due to both players disconnecting.`
+            `Game ${game.id} removed from games due to both players disconnecting.`
           );
         }
       }
     }
   });
 });
+
+app.get("/games", (req, res) => {
+  let output = "";
+
+  for (const gameId in games) {
+    const game = games[gameId];
+    const board = boardToString(game.board);
+    output += `Game: ${gameId}\n`;
+    output += `Player 1: ${game.player1}\n`;
+    output += `Player 2: ${game.player2}\n`;
+    output += `\n${board}\n\n`;
+  }
+
+  if (!output) {
+    output = "No games in progress.";
+  }
+
+  res.type("text").send(output);
+});
+
+function boardToString(board: Piece[]) {
+  const pieces = board.map((x) => x ?? " ");
+  let output = "";
+
+  output += `${pieces.slice(0, 3).join("|")}\n`;
+  output += "-----\n";
+  output += `${pieces.slice(3, 6).join("|")}\n`;
+  output += "-----\n";
+  output += `${pieces.slice(6, 9).join("|")}\n`;
+
+  return output;
+}
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

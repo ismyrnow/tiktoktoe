@@ -9,6 +9,7 @@
 - [ ] Set up app hosting on homelab
 
 ## Low Priority
+- [ ] Add timestamps to games
 - [ ] Look into simplifying game service to just track Game state changes, and extracting common game logic to useGameService
 - [ ] Look into combining server and client to simplify dev and deployment
 - [ ] Add unit tests to client
@@ -24,3 +25,5 @@
 - [x] Auto join
 - [x] Remove Supabase user and game service
 - [x] Remove need for user service entirely
+- [x] Add server game monitoring
+- [x] BUG: Fix game cleanup logic
