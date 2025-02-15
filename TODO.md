@@ -8,7 +8,7 @@
 
 ## Clean Up
 - [x] Remove Supabase user and game service
-- [ ] Remove need for user service entirely
+- [x] Remove need for user service entirely
 - [ ] Look into simplifying game service to just track Game state changes, and extracting common game logic to useGameService
 - [ ] Look into combining server and client to simplify dev and deployment
 - [ ] Add unit tests to client

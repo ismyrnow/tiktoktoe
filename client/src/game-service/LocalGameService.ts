@@ -1,7 +1,8 @@
-import userService from "../user-service/LocalUserService";
 import { Game, IGameService, Piece, Status, Win } from "./GameServiceTypes";
 import LocalGames from "./LocalGames";
 import { BLANK_GAME, getNextPiece, getStatus, getWin } from "./game-helpers";
+
+const USER_ID = `usr_${self.crypto.randomUUID()}`;
 
 class LocalGameService implements IGameService {
   private userId: string | null = null;
@@ -9,12 +10,10 @@ class LocalGameService implements IGameService {
   private onUpdateCallback: (() => void) | null = null;
 
   async createGame(): Promise<void> {
-    this.userId = await userService.getUserId();
-
     this.game = LocalGames.create({
       id: self.crypto.randomUUID(),
       board: Array(9).fill(null),
-      player1: this.userId,
+      player1: USER_ID,
       player2: null,
     });
 
@@ -22,17 +21,15 @@ class LocalGameService implements IGameService {
   }
 
   async joinGame(gameId: string): Promise<void> {
-    const userId = await userService.getUserId();
-
     const game = LocalGames.get(gameId);
 
-    if (game.player1 === userId || game.player2 === userId) {
+    if (game.player1 === USER_ID || game.player2 === USER_ID) {
       console.log("LocalGameService: Already joined the game", game);
     } else {
       // Boots player 2 if already exists
       this.game = LocalGames.update({
         id: gameId,
-        player2: userId,
+        player2: USER_ID,
       });
     }
 
