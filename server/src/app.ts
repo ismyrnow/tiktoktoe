@@ -7,7 +7,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://10.0.0.63:5173",
+      "http://10.0.0.63:3000",
+    ],
     methods: ["GET", "POST"],
   },
 });
@@ -30,7 +35,41 @@ const games: { [key: Game["id"]]: Game } = {};
 io.on("connection", (socket: Socket) => {
   console.log("A user connected: " + socket.id);
 
+  // Let a client create a game or join one with a player waiting
+  socket.on("createOrJoinGame", () => {
+    // Check the game list for a game with an open player slot.
+    // If there is one, join it. Otherwise, create a new game.
+    const game = Object.values(games).find(
+      (game) =>
+        (game.player1 && !game.player2) || (game.player2 && !game.player1)
+    );
+
+    if (game) {
+      // Join existing game
+      console.log("Waiting game found: " + game.id);
+      game.player2 = socket.id;
+      socket.join(game.id);
+      socket.emit("gameCreatedOrJoined", game);
+      io.to(game.id).emit("gameUpdated", game);
+      console.log(`${socket.id} joined game: ${game.id}`);
+    } else {
+      // Create a new game
+      const newGame: Game = {
+        id: randomUUID(),
+        board: Array(9).fill(null),
+        player1: socket.id,
+        player2: null,
+      };
+
+      games[newGame.id] = newGame;
+      socket.join(newGame.id);
+      socket.emit("gameCreatedOrJoined", newGame);
+      console.log(`${socket.id} created a new game: ${newGame.id}`);
+    }
+  });
+
   // Create a new game and room, assign socket as player1
+  // NOTE: this is not currently used on the client
   socket.on("createGame", () => {
     const gameId = randomUUID();
     const game: Game = {
@@ -47,6 +86,7 @@ io.on("connection", (socket: Socket) => {
   });
 
   // Join an existing game using provided gameId; assign socket as player2
+  // NOTE: this is not currently used on the client
   socket.on("joinGame", (gameId: string) => {
     const game = games[gameId];
 

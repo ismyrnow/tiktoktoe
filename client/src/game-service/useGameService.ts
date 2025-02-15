@@ -5,8 +5,8 @@ import gameService from "./SocketIOGameService";
 // See https://react.dev/learn/you-might-not-need-an-effect#initializing-the-application
 let hasStartedInit = false;
 
-export default function useGameService(existingGameId: string | null = null) {
-  const [gameId, setGameId] = useState<string | null>(existingGameId);
+export default function useGameService() {
+  const [gameId, setGameId] = useState<string | null>(null);
   const [board, setBoard] = useState(gameService.getBoard());
   const [nextPiece, setNextPiece] = useState(gameService.getNextPiece());
   const [playerPiece, setPlayerPiece] = useState(gameService.getPlayerPiece());
@@ -46,15 +46,11 @@ export default function useGameService(existingGameId: string | null = null) {
     hasStartedInit = true;
 
     (async function () {
-      if (existingGameId) {
-        console.log("useGameService: Joining game", existingGameId);
-        await gameService.joinGame(existingGameId);
-      } else {
-        console.log("useGameService: Creating game");
-        await gameService.createGame();
-        console.log("useGameService: Game created", gameService.getGameId());
-        setGameId(gameService.getGameId());
-      }
+      console.log("useGameService: Creating or joining game");
+
+      await gameService.createOrJoinGame();
+
+      setGameId(gameService.getGameId());
 
       gameService.subscribe(() => {
         syncState();
@@ -66,7 +62,7 @@ export default function useGameService(existingGameId: string | null = null) {
     return () => {
       gameService.unsubscribe();
     };
-  }, [existingGameId]);
+  }, []);
 
   return {
     gameId,

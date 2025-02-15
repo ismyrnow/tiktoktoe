@@ -16,11 +16,49 @@ class SocketIOGameService implements IGameService {
   private playerPiece: Piece | null = null;
 
   constructor() {
-    this.socket = io("http://localhost:3000");
+    this.socket = io(`http://${window.location.hostname}:3000`, {
+      autoConnect: false,
+    });
+  }
+
+  async createOrJoinGame(): Promise<void> {
+    console.log("SocketIOGameService: Creating or joining game");
+
+    return new Promise((resolve, reject) => {
+      this.socket.emit("createOrJoinGame");
+
+      // Wait for the server to acknowledge
+      this.socket.once("gameCreatedOrJoined", (game: Game) => {
+        if (game.player2 === null) {
+          console.log("SocketIOGameService: Game created", game.id);
+        } else {
+          console.log("SocketIOGameService: Game joined", game.id);
+        }
+
+        this.game = game;
+        this.playerPiece = this.game.player1 === this.socket.id ? "x" : "o";
+        resolve();
+      });
+
+      // Listen for errors if any
+      this.socket.once("error", (errorMessage: string) => {
+        console.log(
+          "SocketIOGameService: Error creating or joining game",
+          errorMessage
+        );
+        reject(new Error(errorMessage));
+      });
+
+      // Connect to the server
+      this.socket.connect();
+    });
   }
 
   async createGame(): Promise<void> {
     console.log("SocketIOGameService: Creating game");
+
+    this.socket.connect();
+
     return new Promise((resolve, reject) => {
       this.socket.emit("createGame");
 
@@ -42,6 +80,9 @@ class SocketIOGameService implements IGameService {
 
   async joinGame(gameId: string): Promise<void> {
     console.log("SocketIOGameService: Joining game", gameId);
+
+    this.socket.connect();
+
     return new Promise((resolve, reject) => {
       this.socket.emit("joinGame", gameId);
 

@@ -9,13 +9,9 @@ import { useEffect } from "react";
 import Player from "./Player";
 import Strike from "./Strike";
 
-interface Props {
-  initialGameId?: string;
-}
-
-function Game({ initialGameId }: Props) {
+function Game() {
   const { gameId, board, nextPiece, playerPiece, playNextPiece, status, win } =
-    useGameService(initialGameId);
+    useGameService();
   const opponentPiece = playerPiece === "x" ? "o" : "x";
   const isYourTurn = win ? false : nextPiece === playerPiece;
   const NextPiece = nextPiece === "x" ? CrossButton : NoughtButton;
@@ -26,11 +22,15 @@ function Game({ initialGameId }: Props) {
     }
   }, [gameId]);
 
+  if (!playerPiece) {
+    return <div>Inititializing...</div>;
+  }
+
   if (status === "initializing") {
-    if (initialGameId) {
-      return <div>Joining a game...</div>;
-    } else {
+    if (playerPiece === "x") {
       return <div>Waiting for other player to join...</div>;
+    } else {
+      return <div>Joining an existing game...</div>;
     }
   }
   const You = (
