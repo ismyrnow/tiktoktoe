@@ -7,7 +7,7 @@
 - [ ] Set up app hosting on homelab
 
 ## Clean Up
-- [ ] Remove Supabase user and game service
+- [x] Remove Supabase user and game service
 - [ ] Remove need for user service entirely
 - [ ] Look into simplifying game service to just track Game state changes, and extracting common game logic to useGameService
 - [ ] Look into combining server and client to simplify dev and deployment
