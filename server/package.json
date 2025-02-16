@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc --skipLibCheck",
+    "build": "tsc",
     "start": "tsc && node dist/server.js",
     "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,13 +11,13 @@
   "author": "Ishmael Smyrnow",
   "license": "MIT",
   "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/node": "^22.13.1",
-    "@types/socket.io": "^3.0.1",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2"
   },
   "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.1",
+    "@types/socket.io": "^3.0.1",
     "express": "^4.21.2",
     "socket.io": "^4.8.1",
     "typescript": "^5.7.3"
