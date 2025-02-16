@@ -16,7 +16,7 @@ class SocketIOGameService implements IGameService {
   private playerPiece: Piece | null = null;
 
   constructor() {
-    this.socket = io(`http://${window.location.hostname}:3000`, {
+    this.socket = io({
       autoConnect: false,
     });
   }
