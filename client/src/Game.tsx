@@ -10,13 +10,13 @@ import Strike from "./Strike";
 function Game() {
   const { board, nextPiece, playerPiece, playNextPiece, status, win } =
     useGameService();
-  const isYourTurn = win ? false : nextPiece === playerPiece;
   const NextPiece = nextPiece === "x" ? CrossButton : NoughtButton;
-  const pending = isStatusPending(status, playerPiece);
+  const _isYourTurn = isYourTurn(status, playerPiece);
+  const _isStatusPending = isStatusPending(status, playerPiece);
 
   return (
     <>
-      <div className={pending ? "status pulse" : "status"}>
+      <div className={_isStatusPending ? "status pulse" : "status"}>
         {getStatusMessage(status, playerPiece)}
       </div>
       <div className="board-container">
@@ -27,7 +27,7 @@ function Game() {
                 <Cross />
               ) : piece === "o" ? (
                 <Nought />
-              ) : isYourTurn ? (
+              ) : _isYourTurn ? (
                 <NextPiece onClick={() => playNextPiece(index)} />
               ) : null}
             </div>
@@ -70,6 +70,13 @@ function getStatusMessage(status: Status, playerPiece: Piece | null) {
     default:
       return "Invalid state";
   }
+}
+
+function isYourTurn(status: Status, playerPiece: Piece | null): boolean {
+  return (
+    (status === "player1_turn" && playerPiece === "x") ||
+    (status === "player2_turn" && playerPiece === "o")
+  );
 }
 
 export default Game;

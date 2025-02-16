@@ -28,3 +28,4 @@
 - [x] BUG: Fix game cleanup logic
 - [x] Improve UI to clarify when it's your turn or you're waiting
 - [x] BUG: Client should handle opponent disconnecting
+- [x] BUG: Player 1 can play first move before player 2 joins
