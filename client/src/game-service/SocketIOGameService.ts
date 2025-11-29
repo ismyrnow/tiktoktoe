@@ -16,7 +16,8 @@ class SocketIOGameService implements IGameService {
   private playerPiece: Piece | null = null;
 
   constructor() {
-    this.socket = io({
+    const serverUrl = import.meta.env.DEV ? "http://localhost:3000" : undefined;
+    this.socket = io(serverUrl, {
       autoConnect: false,
     });
   }

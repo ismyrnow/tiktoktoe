@@ -85,3 +85,29 @@ export function getNextPiece(board: Board): Piece | null {
     return "o";
   }
 }
+
+export function isStatusPending(
+  status: Status,
+  playerPiece: Piece | null
+): boolean {
+  const pending =
+    status === "initializing" ||
+    status === "matchmaking" ||
+    (status === "player1_turn" && playerPiece === "o") ||
+    (status === "player2_turn" && playerPiece === "x");
+
+  return pending;
+}
+
+export function isStatusPregame(status: Status): boolean {
+  return status === "initializing" || status === "matchmaking";
+}
+
+export function isStatusEndgame(status: Status): boolean {
+  return (
+    status === "player1_won" ||
+    status === "player2_won" ||
+    status === "draw" ||
+    status === "disconnected"
+  );
+}

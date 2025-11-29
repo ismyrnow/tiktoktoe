@@ -10,7 +10,7 @@
 .strike {
   position: absolute;
   background-color: #e76969;
-  height: 5px;
+  height: 1vw;
   width: 100%;
   transform-origin: center;
 }
